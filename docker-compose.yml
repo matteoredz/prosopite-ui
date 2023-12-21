@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+    depends_on:
+      postgres:
+        condition: service_started
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgres://postgres:postgres@postgres:5432"
+      RAILS_ENV: development
+      RAILS_LOG_TO_STDOUT: true
+    volumes:
+      - ./storage:/rails/storage
+  worker:
+    build:
+      context: .
+    depends_on:
+      postgres:
+        condition: service_started
+    environment:
+      DATABASE_URL: "postgres://postgres:postgres@postgres:5432"
+      RAILS_ENV: development
+      RAILS_LOG_TO_STDOUT: true
+    volumes:
+      - ./storage:/rails/storage
+    command: "bundle exec good_job start"
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: prosopite_ui_development
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  storage:

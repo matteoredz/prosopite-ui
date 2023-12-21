@@ -1,0 +1,51 @@
+---
+require:
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rake
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.2
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Gemspec/RequireMFA:
+  Enabled: false
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+  AllowAdjacentOneLineDefs: true
+
+Layout/IndentationConsistency:
+  Enabled: true
+  EnforcedStyle: indented_internal_methods
+
+Layout/LineLength:
+  Enabled: true
+  Max: 100
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: true
+  Exclude:
+    - lib/tasks/*
+
+Metrics/ClassLength:
+  Enabled: true
+  Exclude: []
+
+Metrics/MethodLength:
+  Enabled: false
+  CountAsOne: ['array', 'hash']
+
+Style/Documentation:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+...

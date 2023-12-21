@@ -1,0 +1,53 @@
+<section class="container pt-12 mx-auto">
+  <h1 class="text-2xl font-medium text-gray-800 dark:text-white">Call stacks</h1>
+  <p class="text-xs dark:text-white">The list of call stacks having the same caller but different subroutines</p>
+
+  <%= render "layouts/breadcrumbs", breadcrumbs: [{ text: "Reports", path: reports_path }, { text: "Detections", path: report_detections_path }] %>
+
+  <% @call_stacks.find_each do |call_stack| %>
+    <div class="mt-6 sm:flex sm:items-center sm:justify-between">
+      <h3 class="text-base text-gray-800 dark:text-white">Call stack ID <%= call_stack.id %> <span class="text-xs">(<%= l call_stack.created_at, format: :long %>)</span></h1>
+
+      <div class="flex items-center gap-x-3">
+        <% if call_stack.resolved? %>
+          <span class="w-1/2 px-5 py-2 text-sm text-white transition-colors duration-200 bg-green-500 border rounded-lg sm:w-auto dark:hover:bg-green-800 hover:bg-green-400">
+            Resolved
+          </span>
+        <% else %>
+          <%= form_with method: :patch, url: report_detection_call_stack_resolve_path(call_stack.detection.report, call_stack.detection, call_stack) do |f| %>
+            <%= f.submit "Resolve", class: "w-1/2 px-5 py-2 text-sm text-white transition-colors duration-200 bg-blue-500 border rounded-lg sm:w-auto hover:bg-blue-400 cursor-pointer" %>
+          <% end %>
+        <% end %>
+
+        <%= link_to "Queries (#{call_stack.queries.count})",
+                    report_detection_call_stack_queries_path(call_stack.detection.report, call_stack.detection, call_stack),
+                    class: "w-1/2 px-5 py-2 text-sm text-gray-800 transition-colors duration-200 bg-white border rounded-lg sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-white dark:border-gray-700" %>
+      </div>
+    </div>
+
+    <div class="flex flex-col overflow-x-auto">
+      <div class="inline-block min-w-full py-2 align-middle">
+        <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 md:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Subroutines</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+              <% call_stack.subroutines.each do |subroutine| %>
+                <tr>
+                  <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                    <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                      <%= subroutine %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</section>

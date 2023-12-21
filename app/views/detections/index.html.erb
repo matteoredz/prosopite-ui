@@ -1,0 +1,70 @@
+<section class="container pt-12 mx-auto">
+  <h1 class="text-2xl font-medium text-gray-800 dark:text-white">Detections</h1>
+  <p class="text-xs dark:text-white">A detection is identified by the caller, hence the first subroutine in the call stack</p>
+
+  <%= render "layouts/breadcrumbs", breadcrumbs: [{ text: "Reports", path: reports_path }] %>
+
+  <section class="relative w-full max-w-md rounded-md mt-12">
+    <h3 class="text-lg font-medium">Search among the detections</h3>
+
+    <%= form_with url: report_detections_path, method: :get do |f| %>
+      <div class="relative mt-2">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+          <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
+            <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </span>
+
+        <%= f.text_field :q, value: params[:q], placeholder: "Search by caller", class: "w-full py-3 pl-10 pr-4 text-gray-700 bg-white border rounded-md dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40" %>
+      </div>
+    <% end %>
+  </section>
+
+  <div class="flex flex-col mt-6 overflow-x-auto">
+    <div class="inline-block min-w-full py-2 align-middle">
+      <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 md:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-800">
+            <tr>
+              <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">ID</th>
+              <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Caller</th>
+              <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+            <% @detections.find_each do |detection| %>
+              <tr>
+                <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                  <h2 class="font-medium text-gray-800 dark:text-white"><%= detection.id %></h2>
+                </td>
+                <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                  <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                    <%= detection.caller %>
+                  </div>
+                  <h4 class="text-xs text-gray-700 dark:text-gray-200 mt-2"><%= l detection.created_at, format: :long %></h4>
+                </td>
+                <td class="px-4 py-4 text-sm whitespace-nowrap">
+                  <div class="flex items-center gap-x-3">
+                    <% if detection.resolved? %>
+                      <span class="w-1/2 px-5 py-2 text-sm text-white transition-colors duration-200 bg-green-500 border rounded-lg sm:w-auto dark:hover:bg-green-800 hover:bg-green-400">
+                        Resolved
+                      </span>
+                    <% else %>
+                      <%= form_with method: :patch, url: report_detection_resolve_path(detection.report, detection) do |f| %>
+                        <%= f.submit "Resolve", class: "w-1/2 px-5 py-2 text-sm text-white transition-colors duration-200 bg-blue-500 border rounded-lg sm:w-auto hover:bg-blue-400 cursor-pointer" %>
+                      <% end %>
+                    <% end %>
+
+                    <%= link_to "Call stacks (#{detection.call_stacks.unresolved.count})",
+                                report_detection_call_stacks_path(detection.report, detection),
+                                class: "w-1/2 px-5 py-2 text-sm text-gray-800 transition-colors duration-200 bg-white border rounded-lg sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-white dark:border-gray-700" %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

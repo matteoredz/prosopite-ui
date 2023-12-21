@@ -1,0 +1,37 @@
+<section class="container pt-12 mx-auto">
+  <h1 class="text-2xl font-medium text-gray-800 dark:text-white">Queries</h1>
+  <p class="text-xs dark:text-white">The N+1 queries executed by a given call stack</p>
+
+  <%= render "layouts/breadcrumbs", breadcrumbs: [{ text: "Reports", path: reports_path }, { text: "Detections", path: report_detections_path }, { text: "Call stacks", path: report_detection_call_stacks_path }] %>
+
+  <% @queries.find_each do |query| %>
+    <div class="mt-6 sm:flex sm:items-center sm:justify-between">
+      <h3 class="text-base text-gray-800 dark:text-white">Query ID <%= query.id %></h3>
+    </div>
+
+    <div class="flex flex-col overflow-x-auto">
+      <div class="inline-block min-w-full py-2 align-middle">
+        <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 md:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th scope="col" class="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Queries</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+              <% query.optimizable_list.each do |optimizable_list_item| %>
+                <tr>
+                  <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                    <div class="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 dark:bg-gray-800">
+                      <%= optimizable_list_item %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</section>
