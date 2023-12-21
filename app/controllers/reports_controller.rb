@@ -17,7 +17,7 @@ class ReportsController < ApplicationController
         ProcessReportJob.perform_later(@report)
         format.html { redirect_to reports_path, notice: "Report was successfully created." }
       else
-        flash.now.alert = @report.errors.full_messages.join(", ")
+        flash.now.alert = @report.human_errors
         format.html { render :new, status: :unprocessable_entity }
       end
     end
