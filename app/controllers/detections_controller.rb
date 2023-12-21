@@ -19,7 +19,7 @@ class DetectionsController < ApplicationController
                       notice: "Detection #{@detection.id} was resolved."
         end
       else
-        flash.now.alert = @detection.errors.full_messages.join(", ")
+        flash.now.alert = @detection.human_errors
         format.html { render :index, status: :unprocessable_entity }
       end
     end

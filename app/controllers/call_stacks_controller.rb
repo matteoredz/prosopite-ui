@@ -17,7 +17,7 @@ class CallStacksController < ApplicationController
                       notice: "Call stack #{@call_stack.id} was resolved."
         end
       else
-        flash.now.alert = @call_stack.errors.full_messages.join(", ")
+        flash.now.alert = @call_stack.human_errors
         format.html { render :index, status: :unprocessable_entity }
       end
     end
