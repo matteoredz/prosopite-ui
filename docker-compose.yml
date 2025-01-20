@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   app:
     build:
@@ -15,6 +13,7 @@ services:
       RAILS_LOG_TO_STDOUT: true
     volumes:
       - ./storage:/rails/storage
+
   worker:
     build:
       context: .
@@ -28,6 +27,7 @@ services:
     volumes:
       - ./storage:/rails/storage
     command: "bundle exec good_job start"
+
   postgres:
     image: postgres:latest
     ports:
